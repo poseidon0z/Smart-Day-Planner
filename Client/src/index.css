@@ -1,0 +1,10 @@
+/* Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Making the site at least cover the screen */
+#root {
+  min-width: 100vw;
+  min-height: 100vh;
+}
