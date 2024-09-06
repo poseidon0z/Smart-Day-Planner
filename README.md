@@ -8,6 +8,8 @@ The **Smart Day Planner** is a productivity tool designed to optimize daily sche
 
 This application is built using the **MERN stack** (MongoDB, Express, React, and Node.js) and hosted on **Vercel**.
 
+You can find the hosted link of the website [here](https://smart-day-planner.vercel.app/)
+
 ---
 
 ### **Table of Contents**
