@@ -9,8 +9,6 @@ function App() {
   ]);
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
-  const [todayTaskList, setTodayTaskList] = useState([]);
-  // const [futureTaskList, setFutureTaskList] = useState([]);
   const handleBackButtonClick = () => {
     setScheduleVisible(false); // Hide the DailySchedule when back is clicked
   };
@@ -23,7 +21,6 @@ function App() {
             date={selectedDate}
             tasks={taskList}
             setTasks={setTaskList}
-            setTodayTaskList={setTodayTaskList}
 
             // onDateSelect={handleDateSelect} // Pass this prop to Tasks for date selection
           />

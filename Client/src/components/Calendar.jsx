@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 const getDaysInMonth = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth();
-  return new Date(year, month + 1, 0).getDate(); // 0 makes the date underflow, hence generating the last day of the month we need
+  return new Date(year, month + 1, 0).getDate();
 };
 
-// Gets the day on which the first date of the month occurs
+
 const getFirstDayOfMonth = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth();
