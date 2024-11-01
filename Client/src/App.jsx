@@ -63,7 +63,8 @@ function App() {
   ]);
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
-
+  const [todayTaskList, setTodayTaskList] = useState([]);
+  // const [futureTaskList, setFutureTaskList] = useState([]);
   const handleBackButtonClick = () => {
     setScheduleVisible(false); // Hide the DailySchedule when back is clicked
   };
@@ -80,6 +81,8 @@ function App() {
             date={selectedDate}
             tasks={taskList}
             setTasks={setTaskList}
+            setTodayTaskList={setTodayTaskList}
+
             // onDateSelect={handleDateSelect} // Pass this prop to Tasks for date selection
           />
         </div>
@@ -87,6 +90,7 @@ function App() {
         <div className="w-full md:w-8/12 flex justify-center items-center h-fit md:min-h-screen">
           {isScheduleVisible ? (
             <DailySchedule
+            todayTaskList={todayTaskList}
               date={selectedDate} // Pass the selected date as a prop
               onBack={handleBackButtonClick} // Pass the back button handler as a prop
             />

@@ -216,19 +216,13 @@
 
 import React, { useEffect, useState } from 'react';
 
-const DailySchedule = ({ date, onBack }) => { 
+const DailySchedule = ({ date, onBack,todayTaskList }) => { 
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     // Replace this with your actual API call to fetch tasks
-    const fetchTasks = async () => {
-      // Example placeholder data from backend
-      const data = [
-        { task: 'Sample Task 1', startTime: '5:00 AM', endTime: '6:00 AM', complete: false },
-        { task: 'Sample Task 2', startTime: '7:00 AM', endTime: '8:00 AM', complete: true },
-        // Add more tasks as needed from backend data
-      ];
-      setTasks(data);
+    const fetchTasks =  () => {
+      setTasks(todayTaskList);
     };
     fetchTasks();
   }, []);
@@ -257,7 +251,7 @@ const DailySchedule = ({ date, onBack }) => {
         <input
           type="date"
           id="date-input"
-          value={date.toISOString().split('T')[0]} // Format date for input
+          value={new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0]} // Format date for input
           readOnly
           className="p-2 border border-gray-300 rounded"
         />
@@ -276,7 +270,7 @@ const DailySchedule = ({ date, onBack }) => {
               key={index}
             >
               <div className="p-3">
-                <div className="text-center">{task.task}</div>
+                <div className="text-center">{task.taskDescription}</div>
               </div>
               <div className="p-3 text-center">
                 <div>{task.startTime}</div>

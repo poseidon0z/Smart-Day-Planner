@@ -165,7 +165,7 @@
 // }
 
 // export default Tasks;
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import trashBin from "/trashbin.svg";
 
 // Task class with static variable for unique ID, and handling task details
@@ -218,7 +218,11 @@ const getFutureTasks = (date, tasks) => {
 };
 
 // Main Tasks component
-function Tasks({ date, tasks, setTasks }) {
+function Tasks({ date, tasks, setTasks,setTodayTaskList }) {
+  useEffect(() => {
+    const todayTaskList = getTodayTasks(date, tasks);
+    setTodayTaskList(todayTaskList);
+  }, [date, tasks, setTodayTaskList]);
   const [newTask, setNewTask] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -265,6 +269,7 @@ function Tasks({ date, tasks, setTasks }) {
 
   // Creating today's task list as JSX
   const todayTaskList = getTodayTasks(date, tasks);
+  // setTodayTaskList(todayTaskList);
   const todayTasks =
     todayTaskList.length > 0 ? (
       todayTaskList.map((task) => (
