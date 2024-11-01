@@ -80,8 +80,6 @@ function Tasks({ date, tasks, setTasks,setTodayTaskList }) {
       return;
     }
 
-    // Alert start and end time
-    alert(`Start Time: ${startTime}, End Time: ${endTime}`);
 
     // Create a new Task object using the Task class
     const formattedDate = date.toDateString(); // Format date to a string
@@ -101,9 +99,7 @@ function Tasks({ date, tasks, setTasks,setTodayTaskList }) {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  // Creating today's task list as JSX
   const todayTaskList = getTodayTasks(date, tasks);
-  // setTodayTaskList(todayTaskList);
   const todayTasks =
     todayTaskList.length > 0 ? (
       todayTaskList.map((task) => (

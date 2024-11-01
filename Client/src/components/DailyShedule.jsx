@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-const DailySchedule = ({ date, onBack,todayTaskList }) => { 
+const DailySchedule = ({ date, onBack,taskList }) => { 
   const [tasks, setTasks] = useState([]);
-
+  const getTodayTasks = (date, tasks) => {
+    return tasks.filter((task) => new Date(task.date).toDateString() === date.toDateString());
+  };
   useEffect(() => {
-    const fetchTasks =  () => {
-      setTasks(todayTaskList);
+    const fetchTasks = () => {
+      setTasks(getTodayTasks(date, taskList));
     };
     fetchTasks();
-  }, []);
+  }, [date, taskList]);
 
   const handleCheckboxChange = (index) => {
     const updatedTasks = [...tasks];
