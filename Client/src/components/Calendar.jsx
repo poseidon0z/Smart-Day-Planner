@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // Gets the number of days in a month
 const getDaysInMonth = (date) => {
@@ -33,7 +33,7 @@ const getTodayTasks = (date, tasks) => {
 };
 
 // Calendar component
-const Calendar = ({ tasks, selectedDate, setSelectedDate }) => {
+const Calendar = ({ tasks, selectedDate, setSelectedDate,setScheduleVisible }) => {
   const currentDate = new Date();
   const [displayDate, setDisplayDate] = useState(startOfMonth(currentDate));
 
@@ -67,7 +67,7 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate }) => {
       getTodayTasks(
         new Date(displayDate.getFullYear(), displayDate.getMonth(), date),
         tasks
-      ).length != 0
+      ).length !== 0
     ) {
       return 'bg-[#F77600]';
     }
@@ -80,9 +80,9 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate }) => {
 
   // Handle clicking on a date
   const handleDateClick = (date) => {
-    setSelectedDate(
-      new Date(displayDate.getFullYear(), displayDate.getMonth(), date)
-    );
+    const selectedDate = new Date(displayDate.getFullYear(), displayDate.getMonth(), date);
+    setSelectedDate(selectedDate); // Update the selected date
+    setScheduleVisible(true);
   };
 
   // Getting details for Month name and Year to display on top of calendar
@@ -119,7 +119,7 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate }) => {
   for (let i = 1; i <= daysInCurrentMonth; i++) {
     calendarDays.push(
       <div
-        onClick={() => handleDateClick(i)}
+        onClick={() => handleDateClick(i)} // Call handleDateClick when date is clicked
         className={
           'border border-border-[#D5D4DF] w-full aspect-square h-full flex justify-center items-center rounded-full cursor-pointer transition-colors duration-300 hover:bg-gray-200 ' +
           specialColours(i)
@@ -132,7 +132,7 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate }) => {
   }
 
   // Add next month's dates
-  for (let i = 1; calendarDays.length % 7 != 0; i++) {
+  for (let i = 1; calendarDays.length % 7 !== 0; i++) {
     calendarDays.push(
       <div
         className="border border-[#D5D4DF] bg-[#F2F3F7] w-full aspect-square h-full flex justify-center items-center rounded-full text-[#A8A8A8]"
