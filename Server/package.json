@@ -1,0 +1,25 @@
+{
+  "name": "smart-timetable-api",
+  "version": "1.0.0",
+  "description": "An api made to be working with the smart timetable app by poseidon0z",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poseidon0z/Smart-Day-Planner.git"
+  },
+  "author": "poseidon0z",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/poseidon0z/Smart-Day-Planner/issues"
+  },
+  "homepage": "https://github.com/poseidon0z/Smart-Day-Planner#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.20.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
