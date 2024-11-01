@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Calendar from './components/Calendar.jsx';
 import Tasks from './components/Tasks.jsx';
+import DailySchedule from './components/DailyShedule.jsx';
 
 function App() {
   const [taskList, setTaskList] = useState([
@@ -25,12 +26,16 @@ function App() {
         </div>
 
         {/* The right section  (Calendar section) */}
-        <div className="w-full md:w-8/12 flex justify-center items-center h-fit md:min-h-screen">
+        {/* <div className="w-full md:w-8/12 flex justify-center items-center h-fit md:min-h-screen">
           <Calendar
             tasks={taskList}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
           ></Calendar>
+        </div> */}
+
+        <div className="w-full md:w-8/12 flex justify-center items-center h-fit md:min-h-screen">
+          <DailySchedule date={selectedDate}></DailySchedule>
         </div>
       </div>
     </>

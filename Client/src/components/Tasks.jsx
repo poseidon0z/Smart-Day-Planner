@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // Trashbin image from public
-import trashBin from '../../public/trashbin.svg';
+import trashBin from '/trashbin.svg';
 
 // Getting tasks scheduled for a particular date
 const getTodayTasks = (date, tasks) => {
