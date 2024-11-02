@@ -1,22 +1,8 @@
 import { Request, Response, Router } from 'express';
-import { sayHello, rateTask, fixTask } from '../Utils/geminiUtils';
+import { sayHello, rateTask, fixTask, reorganise } from '../Utils/geminiUtils';
 import { getProblemFromCode } from '../Utils/general';
 
 const router = Router();
-
-// Type for query parameters in /score endpoint
-interface ScoreQuery {
-  task?: string;
-  start?: string;
-  end?: string;
-}
-
-// Type for query parameters in /fix-task endpoint
-interface FixTaskQuery {
-  task?: string;
-  time?: string;
-  problemCode?: string;
-}
 
 // Simple greeting endpoint
 router.get('/hello', async (req: Request, res: Response) => {
@@ -69,4 +55,10 @@ router.get('/fix-task', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+router.post('/reorganise-task', async (req, res) => {
+  console.log(req.body);
+  const currentTasks = req.body.currentTasks;
+  const answer = await reorganise(currentTasks);
+  res.send(answer);
+});
 export default router;

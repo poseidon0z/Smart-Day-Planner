@@ -6,6 +6,8 @@ console.log('Gemini API Key:', process.env.GEMINI_API_KEY); // This should log y
 import AIRoutes from './Routes/AIRoutes';
 
 const app = express();
+app.use(express.json());
+
 const PORT = 3000;
 
 app.use('/AI/', AIRoutes);
