@@ -1,18 +1,40 @@
 import React, { useEffect, useState } from 'react';
+import Task from '../Objects/Task'; // Import the Task class
 
-const DailySchedule = ({ date, onBack,todayTaskList }) => { 
+const DailySchedule = ({ date, onBack, taskList }) => { 
   const [tasks, setTasks] = useState([]);
 
+  // Convert tasks in taskList to Task instances if they aren't already
+  const initializeTasks = (taskList) => {
+    return taskList.map(task =>
+      task instanceof Task ? task : new Task(task.date, task.taskDescription, task.startTime, task.endTime, task.status)
+    );
+  };
+
+  // Filter tasks for the selected date
+  const getTodayTasks = (date, tasks) => {
+    return tasks.filter((task) => new Date(task.date).toDateString() === date.toDateString());
+  };
+
   useEffect(() => {
-    const fetchTasks =  () => {
-      setTasks(todayTaskList);
+    const fetchTasks = () => {
+      setTasks(getTodayTasks(date, initializeTasks(taskList)));
     };
     fetchTasks();
-  }, []);
+  }, [date, taskList]);
 
   const handleCheckboxChange = (index) => {
     const updatedTasks = [...tasks];
-    updatedTasks[index] = { ...updatedTasks[index], complete: !tasks[index].complete };
+    const task = updatedTasks[index];
+
+    // Use the Task methods to update completion status
+    if (task.status) {
+      task.incompleteTask();
+    } else {
+      task.completeTask();
+    }
+
+    // Update the tasks state
     setTasks(updatedTasks);
   };
 
@@ -20,7 +42,7 @@ const DailySchedule = ({ date, onBack,todayTaskList }) => {
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <div className="flex justify-end mb-4">
         <button 
-          onClick={onBack} // Call onBack function when button is clicked
+          onClick={onBack}
           className="bg-blue-500 text-white rounded px-4 py-2"
         >
           Back
@@ -34,7 +56,7 @@ const DailySchedule = ({ date, onBack,todayTaskList }) => {
         <input
           type="date"
           id="date-input"
-          value={new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0]} // Format date for input
+          value={new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
           readOnly
           className="p-2 border border-gray-300 rounded"
         />
@@ -50,21 +72,21 @@ const DailySchedule = ({ date, onBack,todayTaskList }) => {
           {tasks.map((task, index) => (
             <div
               className={`grid grid-cols-4 border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
-              key={index}
+              key={task.id}
             >
-              <div className="p-3">
-                <div className="text-center">{task.taskDescription}</div>
+              <div className="p-3 text-center">
+                {task.taskDescription}
               </div>
               <div className="p-3 text-center">
-                <div>{task.startTime}</div>
+                {task.startTime}
               </div>
               <div className="p-3 text-center">
-                <div>{task.endTime}</div>
+                {task.endTime}
               </div>
               <div className="p-3 text-center">
                 <input
                   type="checkbox"
-                  checked={task.complete}
+                  checked={task.status}
                   onChange={() => handleCheckboxChange(index)}
                   className="h-5 w-5"
                 />
