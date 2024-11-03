@@ -4,9 +4,7 @@ import DailySchedule from './components/DailyShedule.jsx';
 import Tasks from './components/Tasks.jsx';
 
 function App() {
-  const [taskList, setTaskList] = useState([
-  
-  ]);
+  const [taskList, setTaskList] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
   const handleBackButtonClick = () => {
@@ -27,9 +25,11 @@ function App() {
         </div>
 
         <div className="w-full md:w-8/12 flex justify-center items-center h-fit md:min-h-screen">
-          {isScheduleVisible ? (
+          {isScheduleVisible &&
+          new Date(selectedDate).toDateString() ===
+            new Date().toDateString() ? (
             <DailySchedule
-            taskList={taskList}
+              taskList={taskList}
               date={selectedDate} // Pass the selected date as a prop
               onBack={handleBackButtonClick} // Pass the back button handler as a prop
             />
