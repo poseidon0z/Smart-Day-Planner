@@ -22,10 +22,10 @@ export async function sayHello() {
 
 export async function rateTask(task: string, start: number, end: number) {
   const result =
-    await model.generateContent(`Evaluate the task specificity and time feasibility based on the following guidelines:
-Return 1: If the task requires significant planning or research before execution.
+    await model.generateContent(`Evaluate the task specificity and time feasibility based on the following guidelines. Start and end are timestamps in seconds.:
+Return 1: If the task is vague, and must be split into more tasks while planning.
 Return 2: The task duration (from start to stop) is insufficient to reasonably complete the task.    
-Return 3: The task duration is excessive for a task that requires much less time.
+Return 3: The task duration is excessive for a task that requires significantly less time.
 Return 0: If the task is specific, fits the time well, and doesn’t fall into any of the categories above.
     
 Task: ${task}
@@ -37,7 +37,7 @@ Include only the number. If there’s any confusion, return 0.`);
 
 export async function fixTask(task: string, time: number, problem: string) {
   const result =
-    await model.generateContent(`Fix the problem as mentioned. Do not do anything more than solving the explicit problem mentioned. Provide a list of new tasks, each accompanied by a more appropriate duration (in seconds), formatted as a JSON array of objects.
+    await model.generateContent(`Fix the problem as mentioned. Do not do anything more than solving the explicit problem mentioned. Provide a list of new tasks, each accompanied by a more appropriate duration (in seconds), formatted as a JSON array of objects. Time is given in seconds.
 
 - **Task:** ${task}
 - **Original Time:** ${time}
