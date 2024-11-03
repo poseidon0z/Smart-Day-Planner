@@ -8,6 +8,7 @@ class Task {
     this.startTime = startTime;
     this.endTime = endTime;
     this.status = status;
+    this.completionTime = 0;
   }
 
   incompleteTask() {
@@ -16,6 +17,7 @@ class Task {
 
   completeTask() {
     this.status = true;
+    this.completionTime = Math.floor(Date.now() / 1000);
   }
 
   updateTimes(newStartTime, newEndTime) {
@@ -27,7 +29,7 @@ class Task {
     return `Task ID: ${this.id}\nDescription: ${this.taskDescription}\nDate: ${
       this.date
     }\nStart Time: ${this.startTime}\nEnd Time: ${this.endTime}\nStatus: ${
-      this.status ? "Complete" : "Incomplete"
+      this.status ? 'Complete' : 'Incomplete'
     }`;
   }
 }

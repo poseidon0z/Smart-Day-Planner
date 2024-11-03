@@ -1,105 +1,244 @@
-import React, { useState } from "react";
-import Task from "../Objects/Task";
-import trashBin from "/trashbin.svg";
+import React, { useState } from 'react';
+import Task from '../Objects/Task';
+import trashBin from '/trashbin.svg';
+
+function getProblemFromCode(problemCode) {
+  if (problemCode === 1) {
+    return 'The task is not specific.';
+  } else if (problemCode === 2) {
+    return 'The allocated time is insufficient to complete the task.';
+  } else if (problemCode === 3) {
+    return 'The allocated time is excessive for this task.';
+  } else if (problemCode === 0) {
+    return 'The task is specific and well-suited to the allocated time.';
+  } else {
+    return 'Unknown problem code.';
+  }
+}
 
 const getTodayTasks = (date, tasks) => {
-  return tasks.filter((task) => new Date(task.date).toDateString() === date.toDateString());
+  return tasks.filter(
+    (task) => new Date(task.date).toDateString() === date.toDateString()
+  );
 };
 
 const getFutureTasks = (date, tasks) => {
-  return tasks.filter((task) => new Date(task.date).getTime() > date.getTime() + 43200000);
+  return tasks.filter(
+    (task) => new Date(task.date).getTime() > date.getTime() + 43200000
+  );
 };
 
-function Tasks({ date, tasks, setTasks}) {
-  const [newTask, setNewTask] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+function Tasks({ date, tasks, setTasks }) {
+  const baseURL = 'http://localhost:3000';
+  const [newTask, setNewTask] = useState('');
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+  const [startTimeVar, setStartTimeVar] = useState('');
+  const [endTimeVar, setEndTimeVar] = useState('');
 
   if (!date) {
     date = new Date(); // Set date to current date if no date is selected
   }
 
+  // const addNewTask = () => {
+  //   if (!newTask) {
+  //     alert("Please enter a task description.");
+  //     return;
+  //   }
+  //   if (!startTime || !endTime) {
+  //     alert("Please enter both start and end times.");
+  //     return;
+  //   }
+  //   if (startTime >= endTime) {
+  //     alert("End time must be after start time.");
+  //     return;
+  //   }
 
+  //   const formattedDate = date.toDateString();
+  //   const task = new Task(formattedDate, newTask, startTime, endTime);
+  //   setTasks([...tasks, task]);
 
-  const addNewTask = () => {
+  //   setNewTask("");
+  //   setStartTime("");
+  //   setEndTime("");
+  // };
+
+  const addNewTask = async () => {
     if (!newTask) {
-      alert("Please enter a task description.");
+      alert('Please enter a task description.');
       return;
     }
     if (!startTime || !endTime) {
-      alert("Please enter both start and end times.");
+      alert('Please enter both start and end times.');
       return;
     }
     if (startTime >= endTime) {
-      alert("End time must be after start time.");
+      alert('End time must be after start time.');
       return;
     }
 
-    const formattedDate = date.toDateString();
-    const task = new Task(formattedDate, newTask, startTime, endTime);
-    setTasks([...tasks, task]);
+    try {
+      // Call the API to get the task score
+      const response = await fetch(
+        `${baseURL}/AI/score?task=${encodeURIComponent(
+          newTask
+        )}&start=${startTime}&end=${endTime}`
+      );
+      if (!response.ok) {
+        alert('There was an error rating the task.');
+        return;
+      }
 
-    setNewTask("");
-    setStartTime("");
-    setEndTime("");
+      const problemCode = await response.json();
+      const problemMessage = getProblemFromCode(problemCode);
+
+      if (problemCode !== 0) {
+        // Alert user about the issue and prompt to auto-generate a better task
+        const userWantsAutoFix = window.confirm(
+          `${problemMessage}\nWould you like to auto-generate a better task?`
+        );
+
+        if (userWantsAutoFix) {
+          // Call the fix-task API to generate better task suggestions
+          const timeDuration = parseInt(endTime, 10) - parseInt(startTime, 10);
+          const fixResponse = await fetch(
+            `${baseURL}/AI/fix-task?task=${encodeURIComponent(
+              newTask
+            )}&time=${timeDuration}&problemCode=${problemCode}`
+          );
+
+          if (!fixResponse.ok) {
+            alert('There was an error generating a better task.');
+            return;
+          }
+
+          const suggestedTask = await fixResponse.json();
+
+          // Ask the user to confirm the suggested task
+          const userConfirmsTask = window.confirm(
+            `Suggested Task: ${JSON.stringify(
+              suggestedTask
+            )}\nDo you want to add this task to your timetable?`
+          );
+
+          if (userConfirmsTask) {
+            const newStuff = [];
+            const formattedDate = date.toDateString();
+            for (const task of suggestedTask) {
+              const temp = new Task(
+                formattedDate,
+                task.task,
+                startTime,
+                startTime + parseInt(task.time, 10)
+              );
+              console.log(temp.displayTask());
+              newStuff.push(temp);
+            }
+            setTasks([...tasks, ...newStuff]);
+
+            // Clear the form
+            setNewTask('');
+            setStartTime('');
+            setEndTime('');
+          }
+        }
+      } else {
+        // If task is suitable, add it to the timetable
+        const formattedDate = date.toDateString();
+        const task = new Task(formattedDate, newTask, startTime, endTime);
+        setTasks([...tasks, task]);
+
+        // Clear the form
+        setNewTask('');
+        setStartTime('');
+        setEndTime('');
+      }
+    } catch (error) {
+      console.error('Error adding task:', error);
+      alert('An unexpected error occurred.');
+    }
   };
 
   const delTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  const changeTime = (e, type) => {
+    const [hours, minutes] = e.target.value.split(':').map(Number);
+
+    // Get today's date
+    const now = new Date();
+    now.setHours(hours, minutes, 0, 0); // Set hours, minutes, and reset seconds and milliseconds
+
+    // Set as timestamp
+    if (type == 'start') {
+      setStartTimeVar(e.target.value);
+      setStartTime(Math.floor(now.getTime() / 1000));
+    } else {
+      setEndTimeVar(e.target.value);
+      setEndTime(Math.floor(now.getTime() / 1000));
+    }
+  };
+
   const todayTaskList = getTodayTasks(date, tasks);
-  const todayTasks = todayTaskList.length > 0 ? (
-    todayTaskList.map((task) => (
-      <div
-        key={task.id}
-        className="flex justify-between items-center w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
-      >
-        <div>
-          {task.taskDescription} {task.startTime && task.endTime ? `(${task.startTime} - ${task.endTime})` : ""}
+  const todayTasks =
+    todayTaskList.length > 0 ? (
+      todayTaskList.map((task) => (
+        <div
+          key={task.id}
+          className="flex justify-between items-center w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
+        >
+          <div>
+            {task.taskDescription}{' '}
+            {task.startTime && task.endTime
+              ? `(${task.startTime} - ${task.endTime})`
+              : ''}
+          </div>
+          <img
+            src={trashBin}
+            className="inline-block w-7 h-7 cursor-pointer"
+            onClick={() => delTask(task.id)}
+            alt="Delete"
+          />
         </div>
-        <img
-          src={trashBin}
-          className="inline-block w-7 h-7 cursor-pointer"
-          onClick={() => delTask(task.id)}
-          alt="Delete"
-        />
+      ))
+    ) : (
+      <div className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2">
+        No tasks for today!
       </div>
-    ))
-  ) : (
-    <div className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2">
-      No tasks for today!
-    </div>
-  );
+    );
 
   const futureTaskList = getFutureTasks(date, tasks);
-  const futureTasks = futureTaskList.length > 0 ? (
-    futureTaskList.map((task) => (
-      <div
-        key={task.id}
-        className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
-      >
-        {task.taskDescription} {task.startTime ? `from ${task.startTime}` : ""} {task.endTime ? `to ${task.endTime}` : ""}
+  const futureTasks =
+    futureTaskList.length > 0 ? (
+      futureTaskList.map((task) => (
+        <div
+          key={task.id}
+          className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
+        >
+          {task.taskDescription}{' '}
+          {task.startTime ? `from ${task.startTime}` : ''}{' '}
+          {task.endTime ? `to ${task.endTime}` : ''}
+        </div>
+      ))
+    ) : (
+      <div className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2">
+        No upcoming tasks!
       </div>
-    ))
-  ) : (
-    <div className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2">
-      No upcoming tasks!
-    </div>
-  );
+    );
 
   return (
     <>
       <div className="flex w-full">
         <div className="flex items-center ml-auto p-5">
           <div className="text-8xl text-white">
-            {date.getDate() < 10 ? "0" + date.getDate() : date.getDate()}
+            {date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}
           </div>
           <div className="flex flex-col h-full justify-end text-4xl px-2 py-1 text-white tracking-wider font-semibold">
             <div className="uppercase">
-              {date.toLocaleString("default", { month: "long" })}
+              {date.toLocaleString('default', { month: 'long' })}
             </div>
-            <div>{date.toLocaleString("default", { year: "numeric" })}</div>
+            <div>{date.toLocaleString('default', { year: 'numeric' })}</div>
           </div>
         </div>
       </div>
@@ -131,15 +270,15 @@ function Tasks({ date, tasks, setTasks}) {
           />
           <input
             type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            value={startTimeVar}
+            onChange={(e) => changeTime(e, 'start')}
             className="border border-gray-300 rounded p-2 ml-2 w-1/3"
             placeholder="Start time"
           />
           <input
             type="time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            value={endTimeVar}
+            onChange={(e) => changeTime(e, 'end')}
             className="border border-gray-300 rounded p-2 ml-2 w-1/3"
             placeholder="End time"
           />
