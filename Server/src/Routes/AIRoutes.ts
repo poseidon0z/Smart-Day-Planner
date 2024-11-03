@@ -42,6 +42,7 @@ router.get('/fix-task', async (req: Request, res: Response): Promise<void> => {
 
   if (!task || !time || !problemCode) {
     res.status(400).send('Task, time, and problemCode are required.');
+    return;
   }
 
   const problem = getProblemFromCode(problemCode);
