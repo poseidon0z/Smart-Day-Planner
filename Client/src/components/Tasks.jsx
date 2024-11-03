@@ -180,6 +180,18 @@ function Tasks({ date, tasks, setTasks }) {
     }
   };
 
+  function formatTime(seconds) {
+    const date = new Date(seconds * 1000); // Convert seconds to milliseconds
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12 || 12; // Convert to 12-hour format and handle midnight (0)
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+
+    return `${hours}:${formattedMinutes} ${ampm}`;
+  }
+
   const todayTaskList = getTodayTasks(date, tasks);
   const todayTasks =
     todayTaskList.length > 0 ? (
@@ -191,7 +203,7 @@ function Tasks({ date, tasks, setTasks }) {
           <div>
             {task.taskDescription}{' '}
             {task.startTime && task.endTime
-              ? `(${task.startTime} - ${task.endTime})`
+              ? `(${formatTime(task.startTime)} - ${formatTime(task.endTime)})`
               : ''}
           </div>
           <img
@@ -216,9 +228,7 @@ function Tasks({ date, tasks, setTasks }) {
           key={task.id}
           className="inline-block w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
         >
-          {task.taskDescription}{' '}
-          {task.startTime ? `from ${task.startTime}` : ''}{' '}
-          {task.endTime ? `to ${task.endTime}` : ''}
+          {task.taskDescription}
         </div>
       ))
     ) : (

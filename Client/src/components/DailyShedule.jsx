@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Task from '../Objects/Task'; // Import the Task class
 
-const DailySchedule = ({ date, onBack, taskList }) => { 
+const DailySchedule = ({ date, onBack, taskList }) => {
   const [tasks, setTasks] = useState([]);
 
   // Convert tasks in taskList to Task instances if they aren't already
   const initializeTasks = (taskList) => {
-    return taskList.map(task =>
-      task instanceof Task ? task : new Task(task.date, task.taskDescription, task.startTime, task.endTime, task.status)
+    return taskList.map((task) =>
+      task instanceof Task
+        ? task
+        : new Task(
+            task.date,
+            task.taskDescription,
+            task.startTime,
+            task.endTime,
+            task.status
+          )
     );
   };
 
   // Filter tasks for the selected date
   const getTodayTasks = (date, tasks) => {
-    return tasks.filter((task) => new Date(task.date).toDateString() === date.toDateString());
+    return tasks.filter(
+      (task) => new Date(task.date).toDateString() === date.toDateString()
+    );
   };
 
   useEffect(() => {
@@ -38,17 +48,31 @@ const DailySchedule = ({ date, onBack, taskList }) => {
     setTasks(updatedTasks);
   };
 
+  function formatTime(seconds) {
+    const date = new Date(seconds * 1000); // Convert seconds to milliseconds
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12 || 12; // Convert to 12-hour format and handle midnight (0)
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+
+    return `${hours}:${formattedMinutes} ${ampm}`;
+  }
+
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <div className="flex justify-end mb-4">
-        <button 
+        <button
           onClick={onBack}
           className="bg-blue-500 text-white rounded px-4 py-2"
         >
           Back
         </button>
       </div>
-      <h2 className="text-2xl font-bold mb-4">Daily Schedule for {date.toDateString()}</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        Daily Schedule for {date.toDateString()}
+      </h2>
       <div className="flex items-center mb-4 p-2 border border-gray-300 rounded-lg bg-gray-100">
         <label htmlFor="date-input" className="mr-2 font-semibold">
           Date:
@@ -56,7 +80,11 @@ const DailySchedule = ({ date, onBack, taskList }) => {
         <input
           type="date"
           id="date-input"
-          value={new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0]}
+          value={
+            new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+              .toISOString()
+              .split('T')[0]
+          }
           readOnly
           className="p-2 border border-gray-300 rounded"
         />
@@ -71,18 +99,16 @@ const DailySchedule = ({ date, onBack, taskList }) => {
         <div className="max-h-96 overflow-y-auto">
           {tasks.map((task, index) => (
             <div
-              className={`grid grid-cols-4 border-b ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
+              className={`grid grid-cols-4 border-b ${
+                index % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+              }`}
               key={task.id}
             >
+              <div className="p-3 text-center">{task.taskDescription}</div>
               <div className="p-3 text-center">
-                {task.taskDescription}
+                {formatTime(task.startTime)}
               </div>
-              <div className="p-3 text-center">
-                {task.startTime}
-              </div>
-              <div className="p-3 text-center">
-                {task.endTime}
-              </div>
+              <div className="p-3 text-center">{formatTime(task.endTime)}</div>
               <div className="p-3 text-center">
                 <input
                   type="checkbox"
