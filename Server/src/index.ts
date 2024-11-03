@@ -2,10 +2,13 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config({ path: './src/.env' });
 
+import cors from 'cors';
+
 console.log('Gemini API Key:', process.env.GEMINI_API_KEY); // This should log your API key
 import AIRoutes from './Routes/AIRoutes';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const PORT = 3000;
