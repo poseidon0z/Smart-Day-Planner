@@ -78,7 +78,7 @@ Key Information:
 
 Core Requirements:
 
-    Keep completed tasks unchanged.
+    DO NOT MAKE ANY CHANGES TO COMPLETED TASKS.
     For incomplete tasks:
         Use completedTime as the end time for completed tasks to determine the start of the next task or break. If completedTime is null, use the task's original end.
         Maintain their original durations (end - start time difference).
