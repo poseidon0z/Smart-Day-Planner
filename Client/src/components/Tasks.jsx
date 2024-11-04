@@ -28,7 +28,7 @@ const getFutureTasks = (date, tasks) => {
   );
 };
 
-function Tasks({ date, tasks, setTasks }) {
+const Tasks = ({ date, tasks, setTasks }) => {
   const baseURL = 'http://localhost:3000';
   const [newTask, setNewTask] = useState('');
   const [startTime, setStartTime] = useState(0);
@@ -39,29 +39,6 @@ function Tasks({ date, tasks, setTasks }) {
   if (!date) {
     date = new Date(); // Set date to current date if no date is selected
   }
-
-  // const addNewTask = () => {
-  //   if (!newTask) {
-  //     alert("Please enter a task description.");
-  //     return;
-  //   }
-  //   if (!startTime || !endTime) {
-  //     alert("Please enter both start and end times.");
-  //     return;
-  //   }
-  //   if (startTime >= endTime) {
-  //     alert("End time must be after start time.");
-  //     return;
-  //   }
-
-  //   const formattedDate = date.toDateString();
-  //   const task = new Task(formattedDate, newTask, startTime, endTime);
-  //   setTasks([...tasks, task]);
-
-  //   setNewTask("");
-  //   setStartTime("");
-  //   setEndTime("");
-  // };
 
   const addNewTask = async () => {
     if (!newTask) {
@@ -312,6 +289,6 @@ function Tasks({ date, tasks, setTasks }) {
       </div>
     </>
   );
-}
+};
 
 export default Tasks;
