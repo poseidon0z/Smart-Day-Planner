@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Task from '../Objects/Task'; // Import the Task class
 
-const DailySchedule = ({ date, onBack, taskList, refresh }) => {
+const DailySchedule = ({ date, onBack, taskList, refresh, newTasks }) => {
   const [tasks, setTasks] = useState([]);
 
   // Convert tasks in taskList to Task instances if they aren't already
@@ -74,21 +74,29 @@ const DailySchedule = ({ date, onBack, taskList, refresh }) => {
       <h2 className="text-2xl font-bold mb-4">
         Daily Schedule for {date.toDateString()}
       </h2>
-      <div className="flex items-center mb-4 p-2 border border-gray-300 rounded-lg bg-gray-100">
-        <label htmlFor="date-input" className="mr-2 font-semibold">
-          Date:
-        </label>
-        <input
-          type="date"
-          id="date-input"
-          value={
-            new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-              .toISOString()
-              .split('T')[0]
-          }
-          readOnly
-          className="p-2 border border-gray-300 rounded"
-        />
+      <div className="flex justify-between items-center mb-4 p-2 border border-gray-300 rounded-lg bg-gray-100">
+        <div>
+          <label htmlFor="date-input" className="mr-2 font-semibold">
+            Date:
+          </label>
+          <input
+            type="date"
+            id="date-input"
+            value={
+              new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                .toISOString()
+                .split('T')[0]
+            }
+            readOnly
+            className="p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <button
+          className="bg-blue-500 text-white rounded px-4 py-2"
+          onClick={newTasks}
+        >
+          Smart update schedule!
+        </button>
       </div>
       <div className="border border-gray-300 rounded-lg overflow-hidden">
         <div className="grid grid-cols-4 bg-blue-600 text-white text-center">
