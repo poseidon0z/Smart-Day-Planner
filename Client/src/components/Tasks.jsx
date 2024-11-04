@@ -124,13 +124,15 @@ function Tasks({ date, tasks, setTasks }) {
           if (userConfirmsTask) {
             const newStuff = [];
             const formattedDate = date.toDateString();
+            let time = startTime;
             for (const task of suggestedTask) {
               const temp = new Task(
-                formattedDate,
+                new Date(time * 1000).toDateString(),
                 task.task,
-                startTime,
-                startTime + parseInt(task.time, 10)
+                time,
+                time + parseInt(task.time, 10)
               );
+              time += parseInt(task.time, 10);
               console.log(temp.displayTask());
               newStuff.push(temp);
             }
