@@ -72,26 +72,28 @@ export async function reorganise(currentTasks: task[]) {
 Input Tasks: ${JSON.stringify(currentTasks, null, 2)}
 
 Key Information:
-- Current time: ${currentTime}
-- Total time saved from early completions: ${timeSaved} seconds
+
+    Current time: ${currentTime}
+    Total time saved from early completions: ${timeSaved} seconds
 
 Core Requirements:
-1. Keep completed tasks unchanged
-2. For incomplete tasks:
-   - Maintain their original durations (end - start time difference)
-   - Start each task immediately after the previous task ends
-   - No task should start before current time
-3. Insert breaks and end early:
-   - Add 15-minute breaks between tasks when possible (900 seconds)
-   - If more than 45 minutes was saved (2700 seconds), end the workday earlier
-   - Label breaks as {"task": "Break", "completed": false, "completedTime": 0}
-4. Priorities:
-   - First priority: Maintain task durations
-   - Second priority: Add breaks between tasks
-   - Third priority: End the day earlier
+
+    Keep completed tasks unchanged.
+    For incomplete tasks:
+        Use completedTime as the end time for completed tasks to determine the start of the next task or break. If completedTime is null, use the task's original end.
+        Maintain their original durations (end - start time difference).
+        Start each task immediately after the previous task ends, considering completedTime or current time.
+        No task should start before current time.
+    Insert breaks and end early:
+        Add 15-minute breaks between tasks when possible (900 seconds).
+        If more than 45 minutes was saved (2700 seconds), end the workday earlier.
+        Label breaks as {"task": "Break", "completed": false, "completedTime": 0}.
+    Priorities:
+        First priority: Maintain task durations.
+        Second priority: Add breaks between tasks.
+        Third priority: End the day earlier.
 
 IMPORTANT: Return the raw JSON without any codeblock formatting, explanation, or additional text. Do not wrap the response in backticks or any other formatting. The response should start with { and end with } and be valid JSON.
-
 Response Format:
 {
   "currentTasks": [
@@ -103,7 +105,7 @@ Response Format:
       "completedTime": number | null
     }
   ]
-}`);
-
+}
+`);
   return JSON.parse(result.response.text());
 }
