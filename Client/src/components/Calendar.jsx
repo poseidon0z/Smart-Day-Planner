@@ -7,7 +7,6 @@ const getDaysInMonth = (date) => {
   return new Date(year, month + 1, 0).getDate();
 };
 
-
 const getFirstDayOfMonth = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -33,7 +32,12 @@ const getTodayTasks = (date, tasks) => {
 };
 
 // Calendar component
-const Calendar = ({ tasks, selectedDate, setSelectedDate,setScheduleVisible }) => {
+const Calendar = ({
+  tasks,
+  selectedDate,
+  setSelectedDate,
+  setScheduleVisible,
+}) => {
   const currentDate = new Date();
   const [displayDate, setDisplayDate] = useState(startOfMonth(currentDate));
 
@@ -80,7 +84,11 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate,setScheduleVisible }) =
 
   // Handle clicking on a date
   const handleDateClick = (date) => {
-    const selectedDate = new Date(displayDate.getFullYear(), displayDate.getMonth(), date);
+    const selectedDate = new Date(
+      displayDate.getFullYear(),
+      displayDate.getMonth(),
+      date
+    );
     setSelectedDate(selectedDate); // Update the selected date
     setScheduleVisible(true);
   };
@@ -145,7 +153,7 @@ const Calendar = ({ tasks, selectedDate, setSelectedDate,setScheduleVisible }) =
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg shadow-lg w-fit h-fit my-5 w-full sm:w-5/6 lg:w-4/6 xl:w-7/12">
+      <div className="bg-white p-6 rounded-lg shadow-lg h-fit my-5 w-full sm:w-5/6 lg:w-4/6 xl:w-7/12">
         {/* Heading section */}
         <div className="flex w-full justify-between items-center mb-6">
           <div className="text-4xl font-black">{monthYear}</div>
