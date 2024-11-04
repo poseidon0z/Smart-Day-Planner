@@ -41,7 +41,6 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
   }
 
   const addNewTask = async () => {
-    setLoading(true);
     if (!newTask) {
       alert('Please enter a task description.');
       return;
@@ -56,6 +55,9 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
     }
 
     try {
+      if (date.toDateString() == new Date().toDateString()) {
+        setLoading(true);
+      }
       // Call the API to get the task score
       const response = await fetch(
         `${baseURL}/AI/score?task=${encodeURIComponent(
@@ -70,7 +72,10 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
       const problemCode = await response.json();
       const problemMessage = getProblemFromCode(problemCode);
 
-      if (problemCode !== 0) {
+      if (
+        problemCode !== 0 &&
+        date.toDateString() == new Date().toDateString()
+      ) {
         // Alert user about the issue and prompt to auto-generate a better task
         const userWantsAutoFix = window.confirm(
           `${problemMessage}\nWould you like to auto-generate a better task?`
