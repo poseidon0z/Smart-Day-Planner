@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Task from '../Objects/Task'; // Import the Task class
 
-const DailySchedule = ({ date, onBack, taskList }) => {
+const DailySchedule = ({ date, onBack, taskList, refresh }) => {
   const [tasks, setTasks] = useState([]);
 
   // Convert tasks in taskList to Task instances if they aren't already
@@ -28,7 +28,7 @@ const DailySchedule = ({ date, onBack, taskList }) => {
 
   useEffect(() => {
     const fetchTasks = () => {
-      setTasks(getTodayTasks(date, initializeTasks(taskList)));
+      setTasks(() => getTodayTasks(date, initializeTasks(taskList)));
     };
     fetchTasks();
   }, [date, taskList]);
@@ -46,6 +46,7 @@ const DailySchedule = ({ date, onBack, taskList }) => {
 
     // Update the tasks state
     setTasks(updatedTasks);
+    refresh();
   };
 
   function formatTime(seconds) {

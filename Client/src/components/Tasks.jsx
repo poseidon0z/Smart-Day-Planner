@@ -141,6 +141,16 @@ function Tasks({ date, tasks, setTasks }) {
             setStartTime('');
             setEndTime('');
           }
+        } else {
+          // If task is suitable, add it to the timetable
+          const formattedDate = date.toDateString();
+          const task = new Task(formattedDate, newTask, startTime, endTime);
+          setTasks([...tasks, task]);
+
+          // Clear the form
+          setNewTask('');
+          setStartTime('');
+          setEndTime('');
         }
       } else {
         // If task is suitable, add it to the timetable
@@ -200,7 +210,7 @@ function Tasks({ date, tasks, setTasks }) {
           key={task.id}
           className="flex justify-between items-center w-full md:text-lg lg:text-xl ml-2 my-1 rounded-lg p-2 bg-[#9AEDF2]"
         >
-          <div>
+          <div className={task.status ? 'line-through' : ''}>
             {task.taskDescription}{' '}
             {task.startTime && task.endTime
               ? `(${formatTime(task.startTime)} - ${formatTime(task.endTime)})`

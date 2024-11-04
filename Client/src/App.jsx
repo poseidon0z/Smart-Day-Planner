@@ -7,10 +7,14 @@ function App() {
   const [taskList, setTaskList] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
+  const [refresher, setRefresher] = useState(false);
   const handleBackButtonClick = () => {
     setScheduleVisible(false); // Hide the DailySchedule when back is clicked
   };
 
+  const refresh = () => {
+    setRefresher(!refresher);
+  };
   return (
     <>
       <div className="flex flex-col md:flex-row h-fit min-h-screen text-[#364043] bg-[#249EE3]">
@@ -32,6 +36,7 @@ function App() {
               taskList={taskList}
               date={selectedDate} // Pass the selected date as a prop
               onBack={handleBackButtonClick} // Pass the back button handler as a prop
+              refresh={refresh}
             />
           ) : (
             <Calendar
