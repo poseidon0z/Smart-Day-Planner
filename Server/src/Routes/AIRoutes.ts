@@ -57,7 +57,6 @@ router.get('/fix-task', async (req: Request, res: Response): Promise<void> => {
 });
 
 router.post('/reorganise-task', async (req, res) => {
-  console.log(req.body);
   const currentTasks = req.body.currentTasks;
   const answer = await reorganise(currentTasks);
   res.send(answer);
