@@ -3,6 +3,7 @@ import Calendar from './components/Calendar.jsx';
 import DailySchedule from './components/DailyShedule.jsx';
 import Tasks from './components/Tasks.jsx';
 import Task from './Objects/Task.js';
+import Loading from './components/Loading.jsx';
 
 function App() {
   const baseURL = 'http://localhost:3000';
@@ -10,16 +11,14 @@ function App() {
   const [taskList, setTaskList] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
-  const [refresher, setRefresher] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleBackButtonClick = () => {
     setScheduleVisible(false); // Hide the DailySchedule when back is clicked
   };
 
-  const refresh = () => {
-    setRefresher(!refresher);
-  };
-
   const newTasks = async () => {
+    setLoading(true);
+
     try {
       // Map tasklist to the format required by the endpoint
       const currentTasks = taskList.map((task) => ({
@@ -63,18 +62,19 @@ function App() {
     } catch (error) {
       console.error('Failed to update tasklist:', error);
     }
+    setLoading(false);
   };
 
   return (
     <>
+      {loading ? <Loading></Loading> : ''}
       <div className="flex flex-col md:flex-row h-fit min-h-screen text-[#364043] bg-[#249EE3]">
         <div className="flex flex-col min-h-fit bg-[#36DBE5] w-full md:w-4/12">
           <Tasks
             date={selectedDate}
             tasks={taskList}
             setTasks={setTaskList}
-
-            // onDateSelect={handleDateSelect} // Pass this prop to Tasks for date selection
+            setLoading={setLoading}
           />
         </div>
 
@@ -86,7 +86,7 @@ function App() {
               taskList={taskList}
               date={selectedDate} // Pass the selected date as a prop
               onBack={handleBackButtonClick} // Pass the back button handler as a prop
-              refresh={refresh}
+              setLoading={setLoading}
               newTasks={newTasks}
             />
           ) : (
@@ -95,7 +95,6 @@ function App() {
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
               setScheduleVisible={setScheduleVisible}
-              // Assuming Calendar has a similar handler
             />
           )}
         </div>

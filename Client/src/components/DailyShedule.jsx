@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Task from '../Objects/Task'; // Import the Task class
 
-const DailySchedule = ({ date, onBack, taskList, refresh, newTasks }) => {
+const DailySchedule = ({ date, onBack, taskList, setLoading, newTasks }) => {
   const [tasks, setTasks] = useState([]);
 
   // Convert tasks in taskList to Task instances if they aren't already
@@ -34,6 +34,7 @@ const DailySchedule = ({ date, onBack, taskList, refresh, newTasks }) => {
   }, [date, taskList]);
 
   const handleCheckboxChange = (index) => {
+    setLoading(true);
     const updatedTasks = [...tasks];
     const task = updatedTasks[index];
 
@@ -46,7 +47,7 @@ const DailySchedule = ({ date, onBack, taskList, refresh, newTasks }) => {
 
     // Update the tasks state
     setTasks(updatedTasks);
-    refresh();
+    setLoading(false);
   };
 
   function formatTime(seconds) {

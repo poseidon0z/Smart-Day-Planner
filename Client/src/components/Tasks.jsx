@@ -28,7 +28,7 @@ const getFutureTasks = (date, tasks) => {
   );
 };
 
-const Tasks = ({ date, tasks, setTasks }) => {
+const Tasks = ({ date, tasks, setTasks, setLoading }) => {
   const baseURL = 'http://localhost:3000';
   const [newTask, setNewTask] = useState('');
   const [startTime, setStartTime] = useState(0);
@@ -41,6 +41,7 @@ const Tasks = ({ date, tasks, setTasks }) => {
   }
 
   const addNewTask = async () => {
+    setLoading(true);
     if (!newTask) {
       alert('Please enter a task description.');
       return;
@@ -144,6 +145,7 @@ const Tasks = ({ date, tasks, setTasks }) => {
       console.error('Error adding task:', error);
       alert('An unexpected error occurred.');
     }
+    setLoading(false);
   };
 
   const delTask = (id) => {
