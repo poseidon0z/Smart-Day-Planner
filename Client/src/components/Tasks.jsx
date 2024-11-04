@@ -138,8 +138,8 @@ function Tasks({ date, tasks, setTasks }) {
 
             // Clear the form
             setNewTask('');
-            setStartTime('');
-            setEndTime('');
+            // setStartTime('');
+            // setEndTime('');
           }
         } else {
           // If task is suitable, add it to the timetable
@@ -149,8 +149,8 @@ function Tasks({ date, tasks, setTasks }) {
 
           // Clear the form
           setNewTask('');
-          setStartTime('');
-          setEndTime('');
+          // setStartTime('');
+          // setEndTime('');
         }
       } else {
         // If task is suitable, add it to the timetable
@@ -160,8 +160,8 @@ function Tasks({ date, tasks, setTasks }) {
 
         // Clear the form
         setNewTask('');
-        setStartTime('');
-        setEndTime('');
+        // setStartTime('');
+        // setEndTime('');
       }
     } catch (error) {
       console.error('Error adding task:', error);
