@@ -5,6 +5,9 @@ import Tasks from './components/Tasks.jsx';
 import Task from './Objects/Task.js';
 import Loading from './components/Loading.jsx';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   const baseURL = 'http://localhost:3000';
 
@@ -67,6 +70,7 @@ function App() {
 
   return (
     <>
+      <ToastContainer />
       {loading ? <Loading></Loading> : ''}
       <div className="flex flex-col md:flex-row h-fit min-h-screen text-[#364043] bg-[#249EE3]">
         <div className="flex flex-col min-h-fit bg-[#36DBE5] w-full md:w-4/12">

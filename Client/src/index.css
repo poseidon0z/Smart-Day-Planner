@@ -5,6 +5,7 @@
 
 /* Making the site at least cover the screen */
 #root {
+  font-family: Arial, sans-serif;
   min-width: 100vw;
   min-height: 100vh;
 }

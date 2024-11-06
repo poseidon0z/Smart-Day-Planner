@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Task from '../Objects/Task';
 import trashBin from '/trashbin.svg';
+import ConfirmationModal from './ConfirmationModal';
+import TaskTable from './TaskTable';
+import { toast } from 'react-toastify';
 
 function getProblemFromCode(problemCode) {
   if (problemCode === 1) {
@@ -35,6 +38,7 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
   const [endTime, setEndTime] = useState(0);
   const [startTimeVar, setStartTimeVar] = useState('');
   const [endTimeVar, setEndTimeVar] = useState('');
+  const [popUp, setPopup] = useState(null);
 
   if (!date) {
     date = new Date(); // Set date to current date if no date is selected
@@ -42,17 +46,40 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
 
   const addNewTask = async () => {
     if (!newTask) {
-      alert('Please enter a task description.');
+      toast.error('Please enter a task description.');
       return;
     }
     if (!startTime || !endTime) {
-      alert('Please enter both start and end times.');
+      toast.error('Please enter both start and end times.');
       return;
     }
     if (startTime >= endTime) {
-      alert('End time must be after start time.');
+      toast.error('End time must be after start time.');
       return;
     }
+
+    const confirm = (title, content) => {
+      return new Promise((resolve) => {
+        const onClose = () => {
+          setPopup(null);
+          resolve(false);
+        };
+        const onConfirm = () => {
+          setPopup(null);
+          resolve(true);
+        };
+        const value = (
+          <ConfirmationModal
+            onClose={onClose}
+            onConfirm={onConfirm}
+            title={title}
+          >
+            {content}
+          </ConfirmationModal>
+        );
+        setPopup(value);
+      });
+    };
 
     try {
       if (date.toDateString() == new Date().toDateString()) {
@@ -65,7 +92,7 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
         )}&start=${startTime}&end=${endTime}`
       );
       if (!response.ok) {
-        alert('There was an error rating the task.');
+        toast.error('There was an error rating the task.');
         return;
       }
 
@@ -76,12 +103,15 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
         problemCode !== 0 &&
         date.toDateString() == new Date().toDateString()
       ) {
+        setLoading(false);
         // Alert user about the issue and prompt to auto-generate a better task
-        const userWantsAutoFix = window.confirm(
+        const userWantsAutoFix = await confirm(
+          'Task improvement',
           `${problemMessage}\nWould you like to auto-generate a better task?`
         );
 
         if (userWantsAutoFix) {
+          setLoading(true);
           // Call the fix-task API to generate better task suggestions
           const timeDuration = parseInt(endTime, 10) - parseInt(startTime, 10);
           const fixResponse = await fetch(
@@ -91,20 +121,22 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
           );
 
           if (!fixResponse.ok) {
-            alert('There was an error generating a better task.');
+            setLoading(false);
+            toast.error('There was an error generating a better task.');
             return;
           }
 
           const suggestedTask = await fixResponse.json();
 
+          setLoading(false);
           // Ask the user to confirm the suggested task
-          const userConfirmsTask = window.confirm(
-            `Suggested Task: ${JSON.stringify(
-              suggestedTask
-            )}\nDo you want to add this task to your timetable?`
+          const userConfirmsTask = await confirm(
+            'Add these tasks?',
+            <TaskTable tasks={suggestedTask} />
           );
 
           if (userConfirmsTask) {
+            setLoading(true);
             const newStuff = [];
             let time = startTime;
             for (const task of suggestedTask) {
@@ -148,7 +180,7 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
       }
     } catch (error) {
       console.error('Error adding task:', error);
-      alert('An unexpected error occurred.');
+      toast.error('An unexpected error occurred.');
     }
     setLoading(false);
   };
@@ -294,6 +326,7 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
           </button>
         </div>
       </div>
+      {popUp}
     </>
   );
 };
