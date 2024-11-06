@@ -32,7 +32,7 @@ const getFutureTasks = (date, tasks) => {
 };
 
 const Tasks = ({ date, tasks, setTasks, setLoading }) => {
-  const baseURL = 'http://localhost:3000';
+  const baseURL = 'https://smart-day-planner-api.poseidon0z.com';
   const [newTask, setNewTask] = useState('');
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);

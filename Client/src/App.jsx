@@ -9,7 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const baseURL = 'http://localhost:3000';
+  const baseURL = 'https://smart-day-planner-api.poseidon0z.com';
 
   const [taskList, setTaskList] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
