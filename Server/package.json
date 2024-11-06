@@ -19,6 +19,7 @@
   "homepage": "https://github.com/poseidon0z/Smart-Day-Planner#readme",
   "dependencies": {
     "@google/generative-ai": "^0.20.0",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
     "@types/node": "^22.8.6",
     "cors": "^2.8.5",
