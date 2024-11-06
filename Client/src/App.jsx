@@ -15,6 +15,12 @@ function App() {
   const [selectedDate, setSelectedDate] = useState('');
   const [isScheduleVisible, setScheduleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [refresher, setRefresher] = useState(false);
+
+  const refresh = () => {
+    setRefresher(!refresher);
+  };
+
   const handleBackButtonClick = () => {
     setScheduleVisible(false); // Hide the DailySchedule when back is clicked
   };
@@ -92,6 +98,7 @@ function App() {
               onBack={handleBackButtonClick} // Pass the back button handler as a prop
               setLoading={setLoading}
               newTasks={newTasks}
+              refresh={refresh}
             />
           ) : (
             <Calendar
