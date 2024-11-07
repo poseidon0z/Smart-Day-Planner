@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import Task from '../Objects/Task';
-import trashBin from '/trashbin.svg';
 import ConfirmationModal from './ConfirmationModal';
 import TaskTable from './TaskTable';
-import { toast } from 'react-toastify';
+import trashBin from '/trashbin.svg';
 
 function getProblemFromCode(problemCode) {
   if (problemCode === 1) {
@@ -267,10 +267,10 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
     <>
       <div className="flex w-full">
         <div className="flex items-center ml-auto p-5">
-          <div className="text-8xl text-white">
+          <div className="text-8xl text-white mobile:text-7xl">
             {date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}
           </div>
-          <div className="flex flex-col h-full justify-end text-4xl px-2 py-1 text-white tracking-wider font-semibold">
+          <div className="flex flex-col h-full justify-end text-4xl px-2 py-1 text-white tracking-wider font-semibold md:text-3xl mobile:text-2xl">
             <div className="uppercase">
               {date.toLocaleString('default', { month: 'long' })}
             </div>
@@ -296,36 +296,42 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
       </div>
 
       <div className="mx-auto mt-auto w-11/12 mb-3">
-        <div className="flex mx-auto justify-center items-center">
-          <input
-            type="text"
-            value={newTask}
-            onChange={(e) => setNewTask(e.target.value)}
-            className="border border-gray-300 rounded p-2 w-2/3"
-            placeholder="Enter a new task"
-          />
-          <input
-            type="time"
-            value={startTimeVar}
-            onChange={(e) => changeTime(e, 'start')}
-            className="border border-gray-300 rounded p-2 ml-2 w-1/3"
-            placeholder="Start time"
-          />
-          <input
-            type="time"
-            value={endTimeVar}
-            onChange={(e) => changeTime(e, 'end')}
-            className="border border-gray-300 rounded p-2 ml-2 w-1/3"
-            placeholder="End time"
-          />
-          <button
-            onClick={addNewTask}
-            className="bg-blue-500 text-white rounded p-2 px-5 ml-2 w-1/3"
-          >
-            Add
-          </button>
-        </div>
-      </div>
+  <div className="flex mobile:flex-col mx-auto justify-center items-center gap-2  ">
+    
+    <input
+      type="text"
+      value={newTask}
+      onChange={(e) => setNewTask(e.target.value)}
+      className="border border-gray-300 rounded p-2 w-full sm:w-2/3"
+      placeholder="Enter a new task"
+    />
+
+    {/* Container for time inputs and Add button */}
+    <div className="flex w-full justify-between gap-2  sm:mt-0">
+      <input
+        type="time"
+        value={startTimeVar}
+        onChange={(e) => changeTime(e, 'start')}
+        className="border border-gray-300 rounded p-2 w-full sm:w-1/3"
+        placeholder="Start time"
+      />
+      <input
+        type="time"
+        value={endTimeVar}
+        onChange={(e) => changeTime(e, 'end')}
+        className="border border-gray-300 rounded p-2 w-full sm:w-1/3"
+        placeholder="End time"
+      />
+      <button
+        onClick={addNewTask}
+        className="bg-blue-500 text-white rounded p-2 px-5 w-full sm:w-1/3"
+      >
+        Add
+      </button>
+    </div>
+  </div>
+</div>
+
       {popUp}
     </>
   );
