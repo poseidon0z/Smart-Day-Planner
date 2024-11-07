@@ -99,7 +99,24 @@ const Tasks = ({ date, tasks, setTasks, setLoading }) => {
       const problemCode = await response.json();
       const problemMessage = getProblemFromCode(problemCode);
 
-      if (
+      if (problemCode === 1) {
+        setLoading(false);
+
+        const userWantsToKeep = await confirm(
+          'Task improvement',
+          `${problemMessage}\nMore specific tasks are more likely to be completed! Continue with this task?`
+        );
+        if (userWantsToKeep) {
+          // If task is suitable, add it to the timetable
+          const formattedDate = date.toDateString();
+          const task = new Task(formattedDate, newTask, startTime, endTime);
+          setTasks([...tasks, task]);
+
+          // Clear the form
+          setNewTask('');
+        }
+        return;
+      } else if (
         problemCode !== 0 &&
         date.toDateString() == new Date().toDateString()
       ) {
